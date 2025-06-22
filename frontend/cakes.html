@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cake Collection</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff8f2;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+      color: #c0392b;
+    }
+    .search-bar, .add-cake-form {
+      text-align: center;
+      margin: 20px;
+    }
+    .search-bar input, .add-cake-form input {
+      padding: 10px;
+      width: 60%;
+      max-width: 400px;
+      margin: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    .add-cake-form select {
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 16px;
+      margin: 5px;
+    }
+    .add-cake-form button {
+      padding: 10px 20px;
+      margin-top: 10px;
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .section {
+      margin: 40px;
+    }
+    .cakes-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+    .cake-card {
+      background-color: #ffffff;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 250px;
+      overflow: hidden;
+      transition: transform 0.2s;
+    }
+    .cake-card:hover {
+      transform: scale(1.03);
+    }
+    .cake-info {
+      padding: 15px;
+    }
+    .cake-info h3 {
+      margin: 10px 0 5px;
+      color: #e67e22;
+    }
+    .cake-info p {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #555;
+    }
+    .cake-info strong {
+      display: block;
+      margin-top: 10px;
+      color: #27ae60;
+    }
+    .btn-group {
+      margin-top: 10px;
+    }
+    .edit-btn, .delete-btn {
+      padding: 6px 12px;
+      margin-right: 5px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .edit-btn {
+      background-color: #2980b9;
+      color: white;
+    }
+    .edit-btn:hover {
+      background-color: #1c5980;
+    }
+    .delete-btn {
+      background-color: #e74c3c;
+      color: white;
+    }
+    .delete-btn:hover {
+      background-color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Cake Collection</h1>
+
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search cakes by name..." onkeyup="searchCakes()">
+  </div>
+
+  <div class="add-cake-form">
+    <input type="text" id="cakeName" placeholder="Cake Name">
+    <input type="text" id="cakeDesc" placeholder="Cake Description">
+    <input type="number" id="cakePrice" placeholder="Price">
+    <select id="cakeCategory">
+      <option value="birthday">Birthday</option>
+      <option value="wedding">Wedding</option>
+    </select>
+    <button onclick="addCake()">Add Cake</button>
+  </div>
+
+  <div class="section" id="birthdaySection">
+    <h2 style="text-align:center; color:#8e44ad;">Birthday Cakes</h2>
+    <div class="cakes-container" id="birthdayCakes">
+      <!-- Birthday cakes will be here -->
+    </div>
+  </div>
+
+  <div class="section" id="weddingSection">
+    <h2 style="text-align:center; color:#8e44ad;">Wedding Cakes</h2>
+    <div class="cakes-container" id="weddingCakes">
+      <!-- Wedding cakes will be here -->
+    </div>
+  </div>
+  <script>
+    const birthdayCakes = document.getElementById("birthdayCakes");
+    const weddingCakes = document.getElementById("weddingCakes");
+  
+    function getCakesFromStorage() {
+      return JSON.parse(localStorage.getItem("cakes")) || [];
+    }
+  
+    function saveCakesToStorage(cakes) {
+      localStorage.setItem("cakes", JSON.stringify(cakes));
+    }
+  
+    function renderAllCakes() {
+      birthdayCakes.innerHTML = "";
+      weddingCakes.innerHTML = "";
+      const cakes = getCakesFromStorage();
+      cakes.forEach(cake => {
+        const card = renderCake(cake);
+        if (cake.category === "birthday") {
+          birthdayCakes.appendChild(card);
+        } else {
+          weddingCakes.appendChild(card);
+        }
+      });
+    }
+  
+    function renderCake(cake) {
+      const card = document.createElement("div");
+      card.className = "cake-card";
+      card.dataset.name = cake.name; // for unique identification during edit/delete
+      card.innerHTML = `
+        <div class="cake-info">
+          <h3>${cake.name}</h3>
+          <p>${cake.desc}</p>
+          <strong>₹${cake.price.toFixed(2)}</strong>
+          <div class="btn-group">
+            <button class="edit-btn" onclick="toggleEdit(this)">Edit</button>
+            <button class="delete-btn" onclick="deleteCake(this)">Delete</button>
+          </div>
+        </div>
+      `;
+      return card;
+    }
+  
+    function addCake() {
+      const name = document.getElementById("cakeName").value.trim();
+      const desc = document.getElementById("cakeDesc").value.trim();
+      const price = parseFloat(document.getElementById("cakePrice").value.trim());
+      const category = document.getElementById("cakeCategory").value;
+  
+      if (!name || !desc || isNaN(price)) {
+        alert("Please fill all fields correctly.");
+        return;
+      }
+  
+      const cake = { name, desc, price, category };
+      const cakes = getCakesFromStorage();
+      cakes.push(cake);
+      saveCakesToStorage(cakes);
+      renderAllCakes();
+  
+      // Clear inputs
+      document.getElementById("cakeName").value = "";
+      document.getElementById("cakeDesc").value = "";
+      document.getElementById("cakePrice").value = "";
+    }
+  
+    function toggleEdit(button) {
+      const infoDiv = button.parentElement.parentElement;
+      const card = button.closest(".cake-card");
+      const cakeName = card.dataset.name;
+      const cakes = getCakesFromStorage();
+      const index = cakes.findIndex(cake => cake.name === cakeName);
+      const isEditing = button.textContent === "Save";
+  
+      if (!isEditing) {
+        const cake = cakes[index];
+        infoDiv.innerHTML = `
+          <input type="text" class="edit-title" value="${cake.name}">
+          <textarea class="edit-desc">${cake.desc}</textarea>
+          <input type="number" class="edit-price" value="${cake.price}">
+          <div class="btn-group">
+            <button class="edit-btn" onclick="toggleEdit(this)">Save</button>
+            <button class="delete-btn" onclick="deleteCake(this)">Delete</button>
+          </div>
+        `;
+      } else {
+        const newTitle = infoDiv.querySelector(".edit-title").value.trim();
+        const newDesc = infoDiv.querySelector(".edit-desc").value.trim();
+        const newPrice = parseFloat(infoDiv.querySelector(".edit-price").value);
+  
+        if (!newTitle || !newDesc || isNaN(newPrice)) {
+          alert("Please enter valid values.");
+          return;
+        }
+  
+        cakes[index] = {
+          ...cakes[index],
+          name: newTitle,
+          desc: newDesc,
+          price: newPrice
+        };
+  
+        saveCakesToStorage(cakes);
+        renderAllCakes();
+      }
+    }
+  
+    function deleteCake(button) {
+      const card = button.closest(".cake-card");
+      const cakeName = card.dataset.name;
+      let cakes = getCakesFromStorage();
+      cakes = cakes.filter(cake => cake.name !== cakeName);
+      saveCakesToStorage(cakes);
+      renderAllCakes();
+    }
+  
+    function searchCakes() {
+      const input = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('.cake-card');
+  
+      cards.forEach(card => {
+        const title = card.querySelector('h3')?.textContent.toLowerCase() || "";
+        card.style.display = title.includes(input) ? "block" : "none";
+      });
+    }
+  
+    // Load once on page load
+    if (!localStorage.getItem("cakes")) {
+      const initialCakes = [
+        { name: "Classic Birthday Cake", desc: "Traditional vanilla cake with colorful buttercream", price: 290.99, category: "birthday" },
+        { name: "Chocolate Explosion Cake", desc: "Rich chocolate cake with multiple chocolate layers", price: 340.99, category: "birthday" },
+        { name: "Classic White Tiered Cake", desc: "Elegant three-tier white wedding cake with delicate piping", price: 249.99, category: "wedding" },
+        { name: "Romantic Rose Cake", desc: "Blush pink cake adorned with sugar roses and gold accents", price: 279.99, category: "wedding" }
+      ];
+      saveCakesToStorage(initialCakes);
+    }
+  
+    renderAllCakes();
+  </script>
+  
+
+</body>
+</html>

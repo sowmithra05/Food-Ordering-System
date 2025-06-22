@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>All Feedbacks - Sweet Delights</title>
+  <style>
+    body {
+      font-family: 'Segoe UI';
+      background-color: #fff8f0;
+      padding: 20px;
+    }
+
+    h2 {
+      color: #d2691e;
+      text-align: center;
+    }
+
+    .feedback-container {
+      max-width: 800px;
+      margin: 20px auto;
+    }
+
+    .feedback-card {
+      background: #fff3e0;
+      padding: 20px;
+      border-left: 5px solid #d2691e;
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+
+    .feedback-card p {
+      margin: 6px 0;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      text-decoration: none;
+      color: #d2691e;
+    }
+  </style>
+</head>
+<body>
+  <h2>All Customer Feedbacks</h2>
+  <div class="feedback-container" id="allFeedbacks"></div>
+  <a href="feedback.html" class="back-link">← Back to Feedback Form</a>
+
+  <script>
+    const container = document.getElementById("allFeedbacks");
+    const feedbacks = JSON.parse(localStorage.getItem("sweetFeedbacks") || "[]");
+
+    if (feedbacks.length === 0) {
+      container.innerHTML = "<p>No feedbacks yet.</p>";
+    } else {
+      feedbacks.forEach(fb => {
+        const card = document.createElement("div");
+        card.className = "feedback-card";
+        card.innerHTML = `
+          <p><strong>Name:</strong> ${fb.name}</p>
+          <p><strong>Email:</strong> ${fb.email}</p>
+          ${fb.orderNumber ? `<p><strong>Order Number:</strong> ${fb.orderNumber}</p>` : ""}
+          <p><strong>Rating:</strong> ${fb.rating} / 5</p>
+          <p><strong>Feedback:</strong> ${fb.feedback}</p>
+          <p><em>Submitted on: ${fb.timestamp}</em></p>
+        `;
+        container.appendChild(card);
+      });
+    }
+  </script>
+</body>
+</html>

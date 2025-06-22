@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Cakes - Sweet Delights</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Reuse the CSS from the original page */
+        :root {
+            --primary-color: #FF7F00;
+            --secondary-color: #FFA500;
+            --accent-color: #7c1313;
+            --light-color: #FFF3E0;
+            --dark-color: #331100;
+            --text-color: #333333;
+        }
+        
+        :root {
+            --primary-color: #FF7F00;
+            --secondary-color: #FFA500;
+            --accent-color: #FF4500;
+            --light-color: #FFF3E0;
+            --dark-color: #331100;
+            --text-color: #333333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--primary-color);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+        
+        .btn-outline:hover {
+            background-color: white;
+            color: var(--primary-color);
+        }
+        
+        .btn-primary {
+            background-color: white;
+            color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .hero {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/api/placeholder/1200/600');
+            background-size: cover;
+            background-position: center;
+            height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 0 1rem;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            max-width: 800px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+        
+        .bestsellers {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .product-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .product-image {
+            height: 200px;
+            background-color: #f0f0f0;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .product-info {
+            padding: 1.5rem;
+        }
+        
+        .product-name {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+        
+        .product-description {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        
+        .product-price {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+        
+        .add-to-cart {
+            width: 100%;
+            padding: 0.7rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        
+        .add-to-cart:hover {
+            background-color: var(--accent-color);
+        }
+        
+        .offers {
+            margin-top: 4rem;
+            background-color: var(--secondary-color);
+            padding: 2rem;
+            border-radius: 8px;
+            color: white;
+        }
+        
+        .offer-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .offer-card {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            color: var(--text-color);
+        }
+        
+        .offer-title {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem;
+            margin-top: 4rem;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .social-link {
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .bestsellers, .offer-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .navbar {
+                padding: 1rem;
+            }
+        }
+        
+        .cart-count {
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            position: relative;
+            top: -10px;
+            left: -5px;
+        }
+
+        /* Side Menu Styles */
+        .menu-toggle {
+            font-size: 1.5rem;
+            color: white;
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-right: 1rem;
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100%;
+            background-color: white;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            transition: left 0.3s ease;
+            z-index: 200;
+            overflow-y: auto;
+        }
+
+        .side-menu.active {
+            left: 0;
+        }
+
+        .side-menu-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-menu {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .side-menu-content {
+            padding: 1rem 0;
+        }
+
+        .menu-category {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        .menu-item {
+            padding: 0;
+        }
+
+        .menu-item a, .menu-item-header {
+            display: block;
+            padding: 0.8rem 1.5rem;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-left: 4px solid transparent;
+        }
+
+        .menu-item a:hover, .menu-item-header:hover {
+            background-color: var(--light-color);
+            border-left-color: var(--primary-color);
+        }
+
+        .menu-item-header {
+            font-weight: 600;
+            background-color: #f5f5f5;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .submenu {
+            padding-left: 1rem;
+            list-style: none;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .submenu.active {
+            max-height: 500px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 199;
+            display: none;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        /* Flex for navbar to include hamburger menu */
+        .nav-left {
+            display: flex;
+            align-items: center;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay" id="overlay"></div>
+    
+    <div class="side-menu" id="sideMenu">
+        <!-- Same side menu as in index.html -->
+        <div class="side-menu-header">
+            <h2>Menu</h2>
+            <button class="close-menu" id="closeMenu"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="side-menu-content">
+            <ul class="menu-category">
+                <li class="menu-item"><a href="index.html">Home</a></li>
+                <li class="menu-item">
+                    <div class="menu-item-header" data-toggle="prebooking">Pre-Booking <i class="fas fa-chevron-down"></i></div>
+                    <ul class="submenu" id="prebooking">
+                        <li class="menu-item"><a href="birthday-cakes.html">Birthday Cakes</a></li>
+                        <li class="menu-item"><a href="wedding-cakes.html">Wedding Cakes</a></li>
+                    </ul>
+                </li>
+                <!-- Rest of the menu remains the same as index.html -->
+            </ul>
+        </div>
+    </div>
+    
+    <nav class="navbar">
+        <div class="nav-left">
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="index.html" class="logo">Sweet Delights</a>
+        </div>
+        <div class="nav-buttons">
+            <a href="login.html" class="btn btn-outline">Login</a>
+            <a href="cart.html" class="btn btn-primary">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count" id="cartCount">0</span>
+            </a>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <h1 class="section-title">Wedding Cakes</h1>
+        
+        <div class="bestsellers">
+            <div class="product-card">
+                <div class="product-image" style="background-image: url('/assets/wedding1.png')"></div>
+                <div class="product-info">
+                    <h3 class="product-name">Classic White Tiered Cake</h3>
+                    <p class="product-description">Elegant three-tier white wedding cake with delicate piping</p>
+                    <p class="product-price">249.99</p>
+                    <button class="add-to-cart" data-id="w1" data-name="Classic White Tiered Cake" data-price="249.99">Add to Cart</button>
+                </div>
+            </div>
+            
+            <div class="product-card">
+                <div class="product-image" style="background-image: url('/assets/wedding2.png')"></div>
+                <div class="product-info">
+                    <h3 class="product-name">Romantic Rose Cake</h3>
+                    <p class="product-description">Blush pink cake adorned with sugar roses and gold accents</p>
+                    <p class="product-price">279.99</p>
+                    <button class="add-to-cart" data-id="w2" data-name="Romantic Rose Cake" data-price="279.99">Add to Cart</button>
+                </div>
+            </div>
+            
+            <div class="product-card">
+                <div class="product-image" style="background-image: url('/assets/wedding3.png')"></div>
+                <div class="product-info">
+                    <h3 class="product-name">Modern Geometric Cake</h3>
+                    <p class="product-description">Contemporary design with metallic geometric patterns</p>
+                    <p class="product-price">299.99</p>
+                    <button class="add-to-cart" data-id="w3" data-name="Modern Geometric Cake" data-price="299.99">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <div class="footer-content">
+            <h3>Sweet Delights</h3>
+            <p>123 Bakery Street, Dessertville, CA 90210</p>
+            <p>Email: info@sweetdelights.com | Phone: (555) 123-4567</p>
+            <div class="social-links">
+                <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+            </div>
+            <p>&copy; 2025 Sweet Delights. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+       // Initialize cart from localStorage or create new one
+       let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        updateCartCount();
+        
+        // Add event listeners to all add-to-cart buttons
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', addToCart);
+        });
+        
+        // Function to add product to cart
+        function addToCart(event) {
+            const button = event.target;
+            const id = button.getAttribute('data-id');
+            const name = button.getAttribute('data-name');
+            const price = parseFloat(button.getAttribute('data-price'));
+            
+            // Check if product is already in cart
+            const existingItemIndex = cart.findIndex(item => item.id === id);
+            
+            if (existingItemIndex !== -1) {
+                // Increase quantity if product already in cart
+                cart[existingItemIndex].quantity += 1;
+            } else {
+                // Add new product to cart
+                cart.push({
+                    id,
+                    name,
+                    price,
+                    quantity: 1
+                });
+            }
+            
+            // Save cart to localStorage
+            localStorage.setItem('cart', JSON.stringify(cart));
+            
+            // Update cart count
+            updateCartCount();
+            
+            // Show add to cart animation/notification
+            showAddToCartNotification(name);
+        }
+        
+        // Function to update cart count
+        function updateCartCount() {
+            const cartCountElement = document.getElementById('cartCount');
+            const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
+            cartCountElement.textContent = itemCount;
+        }
+        
+        // Function to show add to cart notification
+        function showAddToCartNotification(productName) {
+            alert(`${productName} added to cart!`);
+            // In a real app, you might want to replace this with a nicer notification
+        }
+
+        // Side menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menuToggle');
+            const closeMenu = document.getElementById('closeMenu');
+            const sideMenu = document.getElementById('sideMenu');
+            const overlay = document.getElementById('overlay');
+            const menuHeaders = document.querySelectorAll('.menu-item-header');
+            
+            // Toggle menu when hamburger icon is clicked
+            menuToggle.addEventListener('click', function() {
+                sideMenu.classList.add('active');
+                overlay.classList.add('active');
+            });
+            
+            // Close menu when close button is clicked
+            closeMenu.addEventListener('click', function() {
+                sideMenu.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+            
+            // Close menu when clicking outside
+            overlay.addEventListener('click', function() {
+                sideMenu.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+            
+            // Toggle submenu when header is clicked
+            menuHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const toggleId = this.getAttribute('data-toggle');
+                    const submenu = document.getElementById(toggleId);
+                    
+                    // Toggle the active class for the submenu
+                    submenu.classList.toggle('active');
+                    
+                    // Toggle the icon
+                    const icon = this.querySelector('i');
+                    if (submenu.classList.contains('active')) {
+                        icon.classList.remove('fa-chevron-down');
+                        icon.classList.add('fa-chevron-up');
+                    } else {
+                        icon.classList.remove('fa-chevron-up');
+                        icon.classList.add('fa-chevron-down');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

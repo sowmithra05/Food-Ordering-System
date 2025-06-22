@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .header-controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .logout-btn {
+      padding: 8px 16px;
+      background-color: #f44336;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .logout-btn:hover {
+      background-color: #d32f2f;
+    }
+    .cakes-btn,.feed-btn {
+      padding: 8px 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .cakes-btn:hover {
+      background-color: #388e3c;
+    }
+    .search-box {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      width: 100%;
+      max-width: 300px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    .loading, .error {
+      text-align: center;
+      padding: 20px;
+      font-style: italic;
+      color: #666;
+    }
+    .error {
+      color: #d32f2f;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Registered Users</h1>
+      <div class="header-controls">
+        <input type="text" id="searchInput" class="search-box" placeholder="Search by name..." />
+        <button class="logout-btn" id="logoutBtn">Logout</button>
+        <a href="cakes.html"><button class="cakes-btn">View Cakes</button></a>
+        <a href="view-feedbacks.html"><button class="feed-btn">View Feedbacks</button></a>
+      </div>
+    </div>
+    
+    <table id="usersTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+        </tr>
+      </thead>
+      <tbody id="usersTableBody">
+        <tr>
+          <td colspan="2" class="loading">Loading users...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    let allUsers = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const response = await fetch('/api/users', {
+          credentials: 'include'
+        });
+
+        if (response.status === 403) {
+          window.location.href = '/admin-login.html';
+          return;
+        }
+
+        if (!response.ok) throw new Error('Failed to fetch users');
+
+        allUsers = await response.json();
+        renderUsers(allUsers);
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+          const searchTerm = e.target.value.toLowerCase();
+          const filtered = allUsers.filter(user => (user.name || '').toLowerCase().includes(searchTerm));
+          renderUsers(filtered);
+        });
+
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('usersTableBody').innerHTML = `
+          <tr><td colspan="2" class="error">Error loading users. Please try again.</td></tr>
+        `;
+      }
+    });
+
+    function renderUsers(users) {
+      const tableBody = document.getElementById('usersTableBody');
+      if (users.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="2">No users found</td></tr>';
+        return;
+      }
+
+      tableBody.innerHTML = users.map(user => `
+        <tr>
+          <td>${user.name || 'N/A'}</td>
+          <td>${user.email || 'N/A'}</td>
+        </tr>
+      `).join('');
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      try {
+        const response = await fetch('/admin/logout', {
+          method: 'POST',
+          credentials: 'include'
+        });
+
+        if (response.ok) {
+          window.location.href = '/admin-login.html';
+        } else {
+          alert('Logout failed. Please try again.');
+        }
+      } catch (error) {
+        console.error('Logout error:', error);
+        alert('Network error during logout.');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Sweet Delights</title>
+    <script defer src="/frontend/auth.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url("/assets/bg.png");
+            background-color:beige;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            margin: 50px auto;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        h2 {
+            color: #ff6600;
+        }
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #ff6600;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #cc5200;
+        }
+        .login-link {
+            margin-top: 10px;
+            display: block;
+        }
+        .message {
+            margin-top: 10px;
+            font-size: 14px;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Register</h2>
+        <form id="registerForm">
+            <input type="text" id="name" placeholder="Full Name" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="password" placeholder="Password (Min 6 chars)" required>
+            <button type="submit" id="registerBtn">Register</button>
+            <p class="message" id="message"></p>
+        </form>
+        <a href="login.html" class="login-link">Already have an account? Login</a>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const messageBox = document.getElementById('message');
+            const registerBtn = document.getElementById('registerBtn');
+
+            messageBox.style.color = "red";
+            messageBox.textContent = "";
+
+            // Basic validation
+            if (name.length < 3) {
+                messageBox.textContent = "Name must be at least 3 characters.";
+                return;
+            }
+            if (!/\S+@\S+\.\S+/.test(email)) {
+                messageBox.textContent = "Invalid email format.";
+                return;
+            }
+            if (password.length < 6) {
+                messageBox.textContent = "Password must be at least 6 characters.";
+                return;
+            }
+
+            // Disable button while processing
+            registerBtn.disabled = true;
+            registerBtn.textContent = "Registering...";
+
+            try {
+                const response = await fetch('http://localhost:5000/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    messageBox.style.color = "green";
+                    messageBox.textContent = "Registration successful! Redirecting...";
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                } else {
+                    messageBox.textContent = data.message || "Registration failed.";
+                }
+            } catch (error) {
+                messageBox.textContent = "Server error. Try again later.";
+            }
+
+            registerBtn.disabled = false;
+            registerBtn.textContent = "Register";
+        });
+    </script>
+
+</body>
+</html>

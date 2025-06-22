@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sweet Delights - Customer Feedback</title>
+  <style>
+    /* (same styles as before, shortened here for clarity) */
+    body { font-family: 'Segoe UI'; background: #fff8f0; margin: 0; padding: 0; }
+    .header { background: #d2691e; color: white; padding: 20px; text-align: center; }
+    .form-container { max-width: 600px; margin: 40px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    input, textarea { width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc; }
+    .rating-group input { margin-right: 5px; }
+    button { background: #d2691e; color: white; padding: 12px 20px; border: none; margin-top: 20px; border-radius: 5px; cursor: pointer; }
+    .error { color: red; font-size: 14px; }
+    #successMessage { display: none; color: green; margin-top: 20px; }
+    .feedback-item { padding: 15px; margin-top: 20px; background: #fff3e0; border-left: 5px solid #d2691e; border-radius: 6px; }
+    a { color: #d2691e; text-decoration: none; margin-top: 15px; display: inline-block; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Sweet Delights</h1>
+    <p>We value your feedback!</p>
+  </div>
+
+  <div class="form-container">
+    <h2>Customer Feedback Form</h2>
+    <form id="feedbackForm">
+      <label for="name">Name:</label>
+      <input type="text" id="name" />
+      <div id="nameError" class="error"></div>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" />
+      <div id="emailError" class="error"></div>
+
+      <label for="orderNumber">Order Number (optional):</label>
+      <input type="text" id="orderNumber" />
+
+      <label>Rating:</label>
+      <div class="rating-group">
+        <input type="radio" name="rating" value="1" /> 1
+        <input type="radio" name="rating" value="2" /> 2
+        <input type="radio" name="rating" value="3" /> 3
+        <input type="radio" name="rating" value="4" /> 4
+        <input type="radio" name="rating" value="5" /> 5
+      </div>
+      <div id="ratingError" class="error"></div>
+
+      <label for="feedback">Your Feedback:</label>
+      <textarea id="feedback" rows="5"></textarea>
+      <div id="feedbackError" class="error"></div>
+
+      <button type="submit">Submit</button>
+    </form>
+    <div id="successMessage">Thank you! Your feedback has been submitted.</div>
+    <a href="view-feedbacks.html">View All Feedbacks</a>
+
+    <div id="feedbackDisplaySection" style="display: none;">
+      <h3>Latest Feedback Submitted</h3>
+      <div id="feedbackOutput"></div>
+    </div>
+  </div>
+
+  <script>
+    const feedbackForm = document.getElementById("feedbackForm");
+    const successMessage = document.getElementById("successMessage");
+    const feedbackOutput = document.getElementById("feedbackOutput");
+    const feedbackDisplaySection = document.getElementById("feedbackDisplaySection");
+
+    feedbackForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      // Clear errors
+      document.getElementById("nameError").textContent = "";
+      document.getElementById("emailError").textContent = "";
+      document.getElementById("ratingError").textContent = "";
+      document.getElementById("feedbackError").textContent = "";
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const orderNumber = document.getElementById("orderNumber").value.trim();
+      const rating = document.querySelector('input[name="rating"]:checked');
+      const feedback = document.getElementById("feedback").value.trim();
+
+      let isValid = true;
+
+      if (name === "") {
+        document.getElementById("nameError").textContent = "Name is required.";
+        isValid = false;
+      }
+
+      if (email === "") {
+        document.getElementById("emailError").textContent = "Email is required.";
+        isValid = false;
+      } else if (!email.includes("@")) {
+        document.getElementById("emailError").textContent = "Enter a valid email.";
+        isValid = false;
+      }
+
+      if (!rating) {
+        document.getElementById("ratingError").textContent = "Please select a rating.";
+        isValid = false;
+      }
+
+      if (feedback === "") {
+        document.getElementById("feedbackError").textContent = "Please enter your feedback.";
+        isValid = false;
+      }
+
+      if (isValid) {
+        const feedbackData = {
+          name,
+          email,
+          orderNumber,
+          rating: rating.value,
+          feedback,
+          timestamp: new Date().toLocaleString()
+        };
+
+        // Save to localStorage
+        const stored = JSON.parse(localStorage.getItem("sweetFeedbacks") || "[]");
+        stored.unshift(feedbackData);
+        localStorage.setItem("sweetFeedbacks", JSON.stringify(stored));
+
+        successMessage.style.display = "block";
+
+        // Show latest feedback
+        feedbackOutput.innerHTML = `
+          <div class="feedback-item">
+            <p><strong>Name:</strong> ${name}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            ${orderNumber ? `<p><strong>Order Number:</strong> ${orderNumber}</p>` : ""}
+            <p><strong>Rating:</strong> ${rating.value} / 5</p>
+            <p><strong>Feedback:</strong> ${feedback}</p>
+            <p><em>${feedbackData.timestamp}</em></p>
+          </div>
+        `;
+        feedbackDisplaySection.style.display = "block";
+
+        feedbackForm.reset();
+      } else {
+        successMessage.style.display = "none";
+      }
+    });
+  </script>
+</body>
+</html>
